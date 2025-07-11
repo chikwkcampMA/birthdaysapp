@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
-    @State private var friends: [Friend] = [
+    @Environment(\.modelContext) private var modelContext
+    @Query private var friends: [Friend] = [
         Friend(name: "John", birthday: .now),
         Friend(name: "Samantha", birthday:Date(timeIntervalSince1970: 0)) ]
     @State private var newName = ""
@@ -36,7 +38,7 @@ struct ContentView: View {
                     }
                     Button("pls save me") {
                         let newFriend = Friend(name: newName, birthday: newBirthday)
-                        friends.append(newFriend)
+                        modelContext.insert(newFriend)
                         newName = ""
                         newBirthday = .now
                     }
@@ -50,5 +52,6 @@ struct ContentView: View {
     
     #Preview {
         ContentView()
+            .modelContainer(for: Friend.self, inMemory: true)
     }
 
